@@ -1,0 +1,815 @@
+openapi: 3.1.0
+info:
+  title: UserInfo Report API
+  version: 1.0.0
+  description: |
+    API for user telemetry collection, ad interaction tracking, analytics, and reporting.
+    Part of the UserInfo Report feature (001-userinfo-report).
+
+servers:
+  - url: http://localhost:8000/api/v1
+    description: Local development server
+  - url: https://api.example.com/api/v1
+    description: Production server
+
+tags:
+  - name: Telemetry
+    description: User telemetry collection endpoints
+  - name: Interactions
+    description: Ad interaction tracking endpoints
+  - name: Analytics
+    description: Time-based analytics and aggregations
+  - name: Reports
+    description: User information reports and exports
+
+paths:
+  # Telemetry Collection
+  /telemetry/session:
+    post:
+      tags:
+        - Telemetry
+      summary: Create user session
+      description: |
+        Creates a new user session and captures device/location information.
+        Implements FR-001 through FR-009.
+      operationId: createUserSession
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SessionCreate'
+      responses:
+        '201':
+          description: Session created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /telemetry/session/{session_id}:
+    patch:
+      tags:
+        - Telemetry
+      summary: Update session end time
+      description: Updates session end timestamp and duration.
+      operationId: updateSessionEnd
+      parameters:
+        - $ref: '#/components/parameters/SessionId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SessionUpdate'
+      responses:
+        '200':
+          description: Session updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionResponse'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  # Ad Interaction Tracking
+  /interactions:
+    post:
+      tags:
+        - Interactions
+      summary: Log ad interaction
+      description: |
+        Logs an ad interaction event (impression, click, skip, complete, dismiss, failure).
+        Implements FR-010 through FR-015.
+      operationId: logAdInteraction
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdInteractionCreate'
+      responses:
+        '201':
+          description: Interaction logged successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdInteractionResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /interactions/{interaction_id}:
+    get:
+      tags:
+        - Interactions
+      summary: Get interaction by ID
+      description: Retrieves a specific ad interaction by ID.
+      operationId: getAdInteraction
+      parameters:
+        - $ref: '#/components/parameters/InteractionId'
+      responses:
+        '200':
+          description: Interaction retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdInteractionResponse'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  # Analytics
+  /analytics/hourly:
+    get:
+      tags:
+        - Analytics
+      summary: Get hourly activity heatmap
+      description: |
+        Returns hourly activity heatmap data. Implements FR-020.
+      operationId: getHourlyActivityHeatmap
+      parameters:
+        - name: date
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+          description: Date for heatmap (defaults to today)
+        - name: days
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 7
+            minimum: 1
+            maximum: 90
+          description: Number of days to include
+      responses:
+        '200':
+          description: Hourly heatmap data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HourlyHeatmapResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /analytics/daily:
+    get:
+      tags:
+        - Analytics
+      summary: Get daily activity trends
+      description: |
+        Returns daily activity trends. Implements FR-021.
+      operationId: getDailyActivityTrends
+      parameters:
+        - name: start_date
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+          description: Start date (defaults to 30 days ago)
+        - name: end_date
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+          description: End date (defaults to today)
+      responses:
+        '200':
+          description: Daily trends data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DailyTrendsResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /analytics/user/{user_id}/patterns:
+    get:
+      tags:
+        - Analytics
+      summary: Get user activity patterns
+      description: |
+        Returns time-based activity patterns for a specific user. Implements FR-022.
+      operationId: getUserActivityPatterns
+      parameters:
+        - $ref: '#/components/parameters/UserId'
+      responses:
+        '200':
+          description: User activity patterns
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserActivityPatternsResponse'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  # Reports
+  /reports/user/{user_id}:
+    get:
+      tags:
+        - Reports
+      summary: Get user information report
+      description: |
+        Returns comprehensive user information report. Implements FR-023.
+      operationId: getUserReport
+      parameters:
+        - $ref: '#/components/parameters/UserId'
+      responses:
+        '200':
+          description: User report
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserReportResponse'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /reports/aggregate:
+    get:
+      tags:
+        - Reports
+      summary: Get aggregate user reports
+      description: |
+        Returns aggregate user reports with filtering. Implements FR-024.
+      operationId: getAggregateReports
+      parameters:
+        - name: device_type
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [mobile, tablet, desktop]
+          description: Filter by device type
+        - name: country
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filter by country code
+        - name: city
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filter by city
+        - name: start_date
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+          description: Start date
+        - name: end_date
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+          description: End date
+      responses:
+        '200':
+          description: Aggregate reports
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AggregateReportResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /reports/ad-interactions:
+    get:
+      tags:
+        - Reports
+      summary: Get ad interaction reports
+      description: |
+        Returns ad interaction performance reports. Implements FR-025.
+      operationId: getAdInteractionReports
+      parameters:
+        - name: ad_creative_id
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filter by ad creative ID
+        - name: start_date
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+          description: Start date
+        - name: end_date
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+          description: End date
+      responses:
+        '200':
+          description: Ad interaction reports
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdInteractionReportResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /reports/export:
+    post:
+      tags:
+        - Reports
+      summary: Export report data
+      description: |
+        Exports report data in CSV or JSON format. Implements FR-026.
+      operationId: exportReport
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExportRequest'
+      responses:
+        '200':
+          description: Export file
+          content:
+            application/csv:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+components:
+  parameters:
+    UserId:
+      name: user_id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: User ID (openid or UUID)
+
+    SessionId:
+      name: session_id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: Session ID
+
+    InteractionId:
+      name: interaction_id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: Interaction ID
+
+  schemas:
+    SessionCreate:
+      type: object
+      required:
+        - user_id
+        - openid
+        - ip_address
+        - device_snapshot
+      properties:
+        user_id:
+          type: string
+          format: uuid
+          description: User ID (optional if creating new user)
+        openid:
+          type: string
+          description: Immutable user identifier
+        nickname:
+          type: string
+          nullable: true
+          description: User nickname
+        ip_address:
+          type: string
+          format: ipv4
+          description: Public IP address
+        device_snapshot:
+          $ref: '#/components/schemas/DeviceSnapshot'
+        location_snapshot:
+          $ref: '#/components/schemas/LocationSnapshot'
+
+    SessionUpdate:
+      type: object
+      properties:
+        end_timestamp:
+          type: string
+          format: date-time
+          description: Session end timestamp
+
+    SessionResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        user_id:
+          type: string
+          format: uuid
+        start_timestamp:
+          type: string
+          format: date-time
+        end_timestamp:
+          type: string
+          format: date-time
+          nullable: true
+        duration:
+          type: integer
+          description: Duration in seconds
+        ip_address:
+          type: string
+        device_snapshot:
+          $ref: '#/components/schemas/DeviceSnapshot'
+        location_snapshot:
+          $ref: '#/components/schemas/LocationSnapshot'
+
+    DeviceSnapshot:
+      type: object
+      required:
+        - os_family
+        - device_class
+      properties:
+        os_family:
+          type: string
+          enum: [iOS, Android, Web]
+        os_version:
+          type: string
+        device_class:
+          type: string
+          enum: [mobile, tablet, desktop]
+        screen_resolution:
+          type: string
+          pattern: '^\d+x\d+$'
+          description: Format: "widthxheight"
+        screen_density:
+          type: number
+          format: float
+          description: DPI/PPI
+        viewport_width:
+          type: integer
+        viewport_height:
+          type: integer
+
+    LocationSnapshot:
+      type: object
+      properties:
+        country:
+          type: string
+        city:
+          type: string
+        latitude:
+          type: number
+          format: float
+          nullable: true
+        longitude:
+          type: number
+          format: float
+          nullable: true
+        location_source:
+          type: string
+          enum: [IP, precise]
+
+    AdInteractionCreate:
+      type: object
+      required:
+        - user_id
+        - session_id
+        - ad_type
+        - ad_creative_id
+        - action
+        - timestamp
+      properties:
+        user_id:
+          type: string
+          format: uuid
+        session_id:
+          type: string
+          format: uuid
+        ad_type:
+          type: string
+          enum: [interstitial, reward, banner]
+        ad_creative_id:
+          type: string
+        placement_id:
+          type: string
+        action:
+          type: string
+          enum: [impression, click, skip, complete, dismiss, failure]
+        timestamp:
+          type: string
+          format: date-time
+        device_snapshot:
+          $ref: '#/components/schemas/DeviceSnapshot'
+        location_snapshot:
+          $ref: '#/components/schemas/LocationSnapshot'
+        metadata:
+          type: object
+          description: Action-specific metadata
+          properties:
+            time_since_impression:
+              type: integer
+              description: Seconds since impression (for clicks)
+            click_position:
+              type: object
+              description: Click position for banner ads
+            time_watched:
+              type: integer
+              description: Seconds watched (for skips/dismissals)
+            skip_reason:
+              type: string
+            total_watch_duration:
+              type: integer
+              description: Total watch duration (for completions)
+            reward_type:
+              type: string
+            reward_amount:
+              type: number
+              format: float
+            verification_status:
+              type: string
+            error_code:
+              type: string
+            error_message:
+              type: string
+
+    AdInteractionResponse:
+      allOf:
+        - $ref: '#/components/schemas/AdInteractionCreate'
+        - type: object
+          properties:
+            interaction_id:
+              type: string
+              format: uuid
+            created_at:
+              type: string
+              format: date-time
+
+    HourlyHeatmapResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              hour_of_day:
+                type: integer
+                minimum: 0
+                maximum: 23
+              date:
+                type: string
+                format: date
+              active_user_count:
+                type: integer
+              total_impressions:
+                type: integer
+              total_clicks:
+                type: integer
+              average_session_duration:
+                type: number
+                format: float
+
+    DailyTrendsResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              date:
+                type: string
+                format: date
+              daily_active_users:
+                type: integer
+              total_sessions:
+                type: integer
+              total_ad_interactions:
+                type: integer
+              average_sessions_per_user:
+                type: number
+                format: float
+
+    UserActivityPatternsResponse:
+      type: object
+      properties:
+        user_id:
+          type: string
+          format: uuid
+        preferred_hours:
+          type: array
+          items:
+            type: integer
+          description: Most active hours (0-23)
+        average_session_start_time:
+          type: string
+          format: time
+        average_session_duration:
+          type: integer
+          description: Average duration in seconds
+        most_active_day_of_week:
+          type: integer
+          minimum: 0
+          maximum: 6
+          description: 0=Monday, 6=Sunday
+
+    UserReportResponse:
+      type: object
+      properties:
+        user_profile:
+          type: object
+          properties:
+            openid:
+              type: string
+            nickname:
+              type: string
+              nullable: true
+            registration_date:
+              type: string
+              format: date-time
+        device_history:
+          type: array
+          items:
+            type: object
+        location_history:
+          type: array
+          items:
+            type: object
+        activity_patterns:
+          $ref: '#/components/schemas/UserActivityPatternsResponse'
+        ad_interaction_summary:
+          type: object
+          properties:
+            total_impressions_per_ad_type:
+              type: object
+              additionalProperties:
+                type: integer
+            ctr_per_ad_type:
+              type: object
+              additionalProperties:
+                type: number
+                format: float
+            completion_rate:
+              type: number
+              format: float
+            skip_rate:
+              type: number
+              format: float
+        risk_indicators:
+          type: object
+          nullable: true
+          properties:
+            risk_score:
+              type: number
+              format: float
+            mitigation_action:
+              type: string
+        report_generated_at:
+          type: string
+          format: date-time
+
+    AggregateReportResponse:
+      type: object
+      properties:
+        filtered_user_count:
+          type: integer
+        aggregate_metrics:
+          type: object
+          properties:
+            total_impressions:
+              type: integer
+            average_ctr:
+              type: number
+              format: float
+            average_completion_rate:
+              type: number
+              format: float
+        device_distribution:
+          type: object
+          additionalProperties:
+            type: integer
+        geographic_distribution:
+          type: object
+          additionalProperties:
+            type: integer
+        time_based_trends:
+          $ref: '#/components/schemas/DailyTrendsResponse'
+
+    AdInteractionReportResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              ad_creative_id:
+                type: string
+              impressions:
+                type: integer
+              clicks:
+                type: integer
+              ctr:
+                type: number
+                format: float
+              completion_rate:
+                type: number
+                format: float
+              skip_rate:
+                type: number
+                format: float
+              user_segment_breakdown:
+                type: object
+                additionalProperties:
+                  type: object
+
+    ExportRequest:
+      type: object
+      required:
+        - format
+        - report_type
+      properties:
+        format:
+          type: string
+          enum: [CSV, JSON]
+        report_type:
+          type: string
+          enum: [user, aggregate, ad_interactions]
+        filters:
+          type: object
+          description: Report-specific filters
+        date_range:
+          type: object
+          properties:
+            start_date:
+              type: string
+              format: date
+            end_date:
+              type: string
+              format: date
+        fields:
+          type: array
+          items:
+            type: string
+          description: Specific fields to include
+
+  responses:
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              detail:
+                type: string
+
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              detail:
+                type: string
+
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              detail:
+                type: string
+
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+security:
+  - BearerAuth: []
+
