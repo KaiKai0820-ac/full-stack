@@ -26,11 +26,11 @@
 
 **Purpose**: Project initialization and basic structure
 
-- [ ] T001 Create database migration directory structure in backend/alembic/versions/ for UserInfo Report migrations
-- [ ] T002 [P] Add MaxMind GeoIP2 dependency to backend/requirements.txt (geoip2 package)
-- [ ] T003 [P] Add Celery dependency to backend/requirements.txt (celery, redis packages)
-- [ ] T004 [P] Configure Celery broker and result backend in backend/app/core/config.py
-- [ ] T005 [P] Create backend/app/services/__init__.py if missing
+- [X] T001 Create database migration directory structure in backend/alembic/versions/ for UserInfo Report migrations
+- [X] T002 [P] Add MaxMind GeoIP2 dependency to backend/requirements.txt (geoip2 package)
+- [X] T003 [P] Add Celery dependency to backend/requirements.txt (celery, redis packages)
+- [X] T004 [P] Configure Celery broker and result backend in backend/app/core/config.py
+- [X] T005 [P] Create backend/app/services/__init__.py if missing
 
 ---
 
@@ -40,30 +40,30 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T006 Create database migration for UserProfile model in backend/alembic/versions/ (base entity for all stories)
-- [ ] T007 [P] Create database migration for UserSession model in backend/alembic/versions/ (needed by US1, US2)
-- [ ] T008 [P] Create database migration for AdInteraction table with partitioning setup in backend/alembic/versions/ (needed by US2)
-- [ ] T009 [P] Create database migration for UserDeviceHistory model in backend/alembic/versions/ (needed by US1)
-- [ ] T010 [P] Create database migration for UserLocationHistory model in backend/alembic/versions/ (needed by US1)
-- [ ] T011 [P] Create database migration for UserActivityPattern model in backend/alembic/versions/ (needed by US3)
-- [ ] T012 [P] Create database migration for DailyUserMetrics model in backend/alembic/versions/ (needed by US4)
-- [ ] T013 [P] Create database migration for DailyCampaignMetrics model in backend/alembic/versions/ (needed by US4)
-- [ ] T014 [P] Create database migration for RiskDecisionAudit model in backend/alembic/versions/ (needed by US4)
-- [ ] T015 [P] Create database migration for materialized view hourly_activity_heatmap in backend/alembic/versions/ (needed by US3)
-- [ ] T016 Create UserProfile SQLModel in backend/app/models.py (base entity)
-- [ ] T017 [P] Create UserSession SQLModel in backend/app/models.py
-- [ ] T018 [P] Create AdInteraction SQLModel in backend/app/models.py
-- [ ] T019 [P] Create UserDeviceHistory SQLModel in backend/app/models.py
-- [ ] T020 [P] Create UserLocationHistory SQLModel in backend/app/models.py
-- [ ] T021 [P] Create UserActivityPattern SQLModel in backend/app/models.py
-- [ ] T022 [P] Create DailyUserMetrics SQLModel in backend/app/models.py
-- [ ] T023 [P] Create DailyCampaignMetrics SQLModel in backend/app/models.py
-- [ ] T024 [P] Create RiskDecisionAudit SQLModel in backend/app/models.py
-- [ ] T025 Setup database partitioning for ad_interaction table (hot data 0-7 days) in backend/alembic/versions/
-- [ ] T026 Create ad_interaction_warm table structure in backend/alembic/versions/ (warm data 8-90 days)
-- [ ] T027 Create ad_interaction_archive table structure in backend/alembic/versions/ (cold data 91-395 days)
-- [ ] T028 Configure IP geolocation service (MaxMind GeoIP2) in backend/app/services/geolocation.py
-- [ ] T029 [P] Add geolocation configuration settings to backend/app/core/config.py (MaxMind database path, ipapi.co API key)
+- [X] T006 Create database migration for UserProfile model in backend/alembic/versions/ (base entity for all stories)
+- [X] T007 [P] Create database migration for UserSession model in backend/alembic/versions/ (needed by US1, US2)
+- [X] T008 [P] Create database migration for AdInteraction table with partitioning setup in backend/alembic/versions/ (needed by US2)
+- [X] T009 [P] Create database migration for UserDeviceHistory model in backend/alembic/versions/ (needed by US1)
+- [X] T010 [P] Create database migration for UserLocationHistory model in backend/alembic/versions/ (needed by US1)
+- [X] T011 [P] Create database migration for UserActivityPattern model in backend/alembic/versions/ (needed by US3)
+- [X] T012 [P] Create database migration for DailyUserMetrics model in backend/alembic/versions/ (needed by US4)
+- [X] T013 [P] Create database migration for DailyCampaignMetrics model in backend/alembic/versions/ (needed by US4)
+- [X] T014 [P] Create database migration for RiskDecisionAudit model in backend/alembic/versions/ (needed by US4)
+- [X] T015 [P] Create database migration for materialized view hourly_activity_heatmap in backend/alembic/versions/ (needed by US3)
+- [X] T016 Create UserProfile SQLModel in backend/app/models.py (base entity)
+- [X] T017 [P] Create UserSession SQLModel in backend/app/models.py
+- [X] T018 [P] Create AdInteraction SQLModel in backend/app/models.py
+- [X] T019 [P] Create UserDeviceHistory SQLModel in backend/app/models.py
+- [X] T020 [P] Create UserLocationHistory SQLModel in backend/app/models.py
+- [X] T021 [P] Create UserActivityPattern SQLModel in backend/app/models.py
+- [X] T022 [P] Create DailyUserMetrics SQLModel in backend/app/models.py
+- [X] T023 [P] Create DailyCampaignMetrics SQLModel in backend/app/models.py
+- [X] T024 [P] Create RiskDecisionAudit SQLModel in backend/app/models.py
+- [X] T025 Setup database partitioning for ad_interaction table (hot data 0-7 days) in backend/alembic/versions/
+- [X] T026 Create ad_interaction_warm table structure in backend/alembic/versions/ (warm data 8-90 days)
+- [X] T027 Create ad_interaction_archive table structure in backend/alembic/versions/ (cold data 91-395 days)
+- [X] T028 Configure IP geolocation service (MaxMind GeoIP2) in backend/app/services/geolocation.py
+- [X] T029 [P] Add geolocation configuration settings to backend/app/core/config.py (MaxMind database path, ipapi.co API key)
 
 **Checkpoint**: Foundation ready - user story implementation can now begin in parallel
 
@@ -77,23 +77,23 @@
 
 ### Implementation for User Story 1
 
-- [ ] T030 [P] [US1] Implement telemetry collection service in backend/app/services/telemetry.py (create session, capture device/location)
-- [ ] T031 [US1] Implement geolocation enrichment service in backend/app/services/geolocation.py (IP to country/city, opt-in location handling)
-- [ ] T032 [US1] Implement POST /telemetry/session endpoint in backend/app/api/routes/telemetry.py (creates session, captures device/location)
-- [ ] T033 [US1] Implement PATCH /telemetry/session/{session_id} endpoint in backend/app/api/routes/telemetry.py (updates session end time)
-- [ ] T034 [US1] Add CRUD operations for UserProfile in backend/app/crud.py (create/update user profile)
-- [ ] T035 [US1] Add CRUD operations for UserSession in backend/app/crud.py (create/update session)
-- [ ] T036 [US1] Add CRUD operations for UserDeviceHistory in backend/app/crud.py (track device changes)
-- [ ] T037 [US1] Add CRUD operations for UserLocationHistory in backend/app/crud.py (track location changes)
-- [ ] T038 [US1] Add validation for device snapshot schema in backend/app/services/telemetry.py (os_family, device_class required)
-- [ ] T039 [US1] Add validation for location snapshot schema in backend/app/services/telemetry.py (country required, opt-in location optional)
-- [ ] T040 [US1] Implement device snapshot preservation logic in backend/app/services/telemetry.py (store device info at session start)
-- [ ] T041 [US1] Implement location snapshot preservation logic in backend/app/services/telemetry.py (store location at session start)
-- [ ] T042 [US1] Add error handling for missing device information in backend/app/services/telemetry.py (mark fields as "unknown")
-- [ ] T043 [US1] Add error handling for geolocation service unavailability in backend/app/services/geolocation.py (queue IPs, mark location as pending)
-- [ ] T044 [US1] Add opt-out flag handling for location tracking in backend/app/services/telemetry.py (respect opt_out_flags)
-- [ ] T045 [US1] Add logging for telemetry collection operations in backend/app/services/telemetry.py
-- [ ] T046 [US1] Register telemetry routes in backend/app/api/main.py
+- [X] T030 [P] [US1] Implement telemetry collection service in backend/app/services/telemetry.py (create session, capture device/location)
+- [X] T031 [US1] Implement geolocation enrichment service in backend/app/services/geolocation.py (IP to country/city, opt-in location handling)
+- [X] T032 [US1] Implement POST /telemetry/session endpoint in backend/app/api/routes/telemetry.py (creates session, captures device/location)
+- [X] T033 [US1] Implement PATCH /telemetry/session/{session_id} endpoint in backend/app/api/routes/telemetry.py (updates session end time)
+- [X] T034 [US1] Add CRUD operations for UserProfile in backend/app/crud.py (create/update user profile)
+- [X] T035 [US1] Add CRUD operations for UserSession in backend/app/crud.py (create/update session)
+- [X] T036 [US1] Add CRUD operations for UserDeviceHistory in backend/app/crud.py (track device changes)
+- [X] T037 [US1] Add CRUD operations for UserLocationHistory in backend/app/crud.py (track location changes)
+- [X] T038 [US1] Add validation for device snapshot schema in backend/app/services/telemetry.py (os_family, device_class required)
+- [X] T039 [US1] Add validation for location snapshot schema in backend/app/services/telemetry.py (country required, opt-in location optional)
+- [X] T040 [US1] Implement device snapshot preservation logic in backend/app/services/telemetry.py (store device info at session start)
+- [X] T041 [US1] Implement location snapshot preservation logic in backend/app/services/telemetry.py (store location at session start)
+- [X] T042 [US1] Add error handling for missing device information in backend/app/services/telemetry.py (mark fields as "unknown")
+- [X] T043 [US1] Add error handling for geolocation service unavailability in backend/app/services/geolocation.py (queue IPs, mark location as pending)
+- [X] T044 [US1] Add opt-out flag handling for location tracking in backend/app/services/telemetry.py (respect opt_out_flags)
+- [X] T045 [US1] Add logging for telemetry collection operations in backend/app/services/telemetry.py
+- [X] T046 [US1] Register telemetry routes in backend/app/api/main.py
 
 **Checkpoint**: At this point, User Story 1 should be fully functional and testable independently. System can create user sessions, capture device/location information, and store all required telemetry data.
 
