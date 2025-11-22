@@ -7,6 +7,20 @@
 
 ## Summary
 
+The UserInfo Report feature enables comprehensive user telemetry collection, ad interaction tracking, time-based analytics, and reporting capabilities. This feature implements the foundational data layer for user profiling, ad targeting, and analytics as specified in the UserInfo Report Constitution.
+
+**Technical Approach**: 
+- Hybrid data storage: PostgreSQL relational tables with append-only event logging pattern for AdInteraction events
+- Data tiering: PostgreSQL native partitioning (hot 7 days) + separate warm/cold archive tables (90 days / 13 months)
+- Aggregations: Materialized views for common queries + real-time computation for user reports
+- Risk detection: Rule-based risk scoring service with configurable thresholds and progressive response tiers
+- Background processing: Celery tasks for ETL, aggregations, and data movement
+- IP geolocation: MaxMind GeoIP2 database with ipapi.co API fallback
+
+All technical decisions align with existing stack (FastAPI, PostgreSQL, Python) and require no new infrastructure dependencies.
+
+## Summary
+
 The UserInfo Report feature enables comprehensive user telemetry collection, ad interaction tracking, time-based analytics, and reporting capabilities. This feature implements the foundational data layer for user profiling, ad targeting, and analytics as specified in the UserInfo Report Constitution. The implementation will extend the existing FastAPI backend with new data models, services, and API endpoints, while providing a React frontend dashboard for operators to view and analyze user information reports.
 
 ## Technical Context
@@ -86,7 +100,7 @@ The UserInfo Report feature enables comprehensive user telemetry collection, ad 
 - **Requirement**: Multi-tier retention (hot 7 days, warm 90 days, cold 13 months)
 - **Status**: ⚠️ NEEDS CLARIFICATION for data tiering implementation (separate databases, partitioning, archiving)
 
-**Gate Status**: ⚠️ **CONDITIONAL PASS** - Core telemetry and interaction tracking requirements are fully specified. Risk/fraud control and data tiering architecture need clarification before Phase 1 design.
+**Gate Status**: ✅ **PASS** - All clarifications resolved in research.md. Core telemetry, interaction tracking, risk/fraud control, and data tiering architecture are fully specified and ready for Phase 1 design.
 
 ## Project Structure
 

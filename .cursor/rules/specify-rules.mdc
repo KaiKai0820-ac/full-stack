@@ -1,0 +1,30 @@
+# bUd0Q Development Guidelines
+
+Auto-generated from all feature plans. Last updated: 2025-11-22
+
+## Active Technologies
+
+- Python >=3.10,<4.0 (backend), TypeScript 5.2+ (frontend) + FastAPI, SQLModel, Pydantic, PostgreSQL (backend), React, TanStack Router, TanStack Query, Chakra UI (frontend) (001-userinfo-report)
+
+## Project Structure
+
+```text
+backend/
+frontend/
+tests/
+```
+
+## Commands
+
+cd src [ONLY COMMANDS FOR ACTIVE TECHNOLOGIES][ONLY COMMANDS FOR ACTIVE TECHNOLOGIES] pytest [ONLY COMMANDS FOR ACTIVE TECHNOLOGIES][ONLY COMMANDS FOR ACTIVE TECHNOLOGIES] ruff check .
+
+## Code Style
+
+Python >=3.10,<4.0 (backend), TypeScript 5.2+ (frontend): Follow standard conventions
+
+## Recent Changes
+
+- 001-userinfo-report: Added Python >=3.10,<4.0 (backend), TypeScript 5.2+ (frontend) + FastAPI, SQLModel, Pydantic, PostgreSQL (backend), React, TanStack Router, TanStack Query, Chakra UI (frontend)
+
+<!-- MANUAL ADDITIONS START -->
+<!-- MANUAL ADDITIONS END -->
